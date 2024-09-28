@@ -1,0 +1,1353 @@
+\documentclass[10pt,letter,notitlepage]{article}
+%Mise en page
+\usepackage[left=2cm, right=2cm, lines=45, top=0.8in, bottom=0.7in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{fancybox}
+\usepackage{pdfpages} 
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\footrulewidth}{1.5pt}
+\pagestyle{fancy}
+\newcommand\Loadedframemethod{TikZ}
+\usepackage[framemethod=\Loadedframemethod]{mdframed}
+\usepackage{tikz}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+%\usepackage{url}
+\usepackage{dsfont}
+\usepackage{amssymb,amsmath}
+\usepackage{xspace}
+\usepackage{comment}
+\usepackage[shortlabels]{enumitem}
+
+
+
+\usepackage{xcolor}
+
+\lhead{
+\textbf{Concordia University}
+}
+\rhead{\textbf{Fall 2024}
+}
+\chead{\textbf{
+COMP6651
+ }}
+
+\newcommand{\RR}{\mathds{R}}
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\bv}{\mathbf{b}}
+\newcommand{\wv}{\mathbf{w}}
+\newcommand{\xv}{\mathbf{x}}
+\newcommand{\yv}{\mathbf{y}}
+\newcommand{\rv}{\mathbf{r}}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\magenta}[1]{{\color{magenta}#1}}
+\newcommand{\bits}{\{ 0, 1 \}}
+
+
+\newcommand{\ea}{{et al.}\xspace}
+\newcommand{\eg}{{e.g.}\xspace}
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand{\iid}{{i.i.d.}\xspace}
+\newcommand{\cf}{{cf.}\xspace}
+\newcommand{\wrt}{{w.r.t.}\xspace}
+\newcommand{\aka}{{a.k.a.}\xspace}
+\newcommand{\etc}{{etc.}\xspace}
+
+\newcommand{\ans}[1]{{\color{orange}\textsf{Ans}: #1}}
+
+
+\lfoot{}
+\cfoot{\textbf{Parsa Kamalipour (\href{mailto:parsa.kamalipour@mail.concordia.ca}{parsa.kamalipour@mail.concordia.ca}) \textcopyright 2024}}
+
+%================================
+%================================
+
+\setlength{\parskip}{1cm}
+\setlength{\parindent}{1cm}
+\tikzstyle{titregris} =
+[draw=gray,fill=white, shading = exersicetitle, %
+text=gray, rectangle, rounded corners, right,minimum height=.3cm]
+\pgfdeclarehorizontalshading{exersicebackground}{100bp}
+{color(0bp)=(green!40); color(100bp)=(black!5)}
+\pgfdeclarehorizontalshading{exersicetitle}{100bp}
+{color(0bp)=(red!40);color(100bp)=(black!5)}
+\newcounter{exercise}
+\renewcommand*\theexercise{exercice \textbf{Exercice}~n\arabic{exercise}}
+\makeatletter
+\def\mdf@@exercisepoints{}%new mdframed key:
+\define@key{mdf}{exercisepoints}{%
+\def\mdf@@exercisepoints{#1}
+}
+
+\mdfdefinestyle{exercisestyle}{%
+outerlinewidth=1em,outerlinecolor=white,%
+leftmargin=-1em,rightmargin=-1em,%
+middlelinewidth=0.5pt,roundcorner=3pt,linecolor=black,
+apptotikzsetting={\tikzset{mdfbackground/.append style ={%
+shading = exersicebackground}}},
+innertopmargin=0.1\baselineskip,
+skipabove={\dimexpr0.1\baselineskip+0\topskip\relax},
+skipbelow={-0.1em},
+needspace=0.5\baselineskip,
+frametitlefont=\sffamily\bfseries,
+settings={\global\stepcounter{exercise}},
+singleextra={%
+\node[titregris,xshift=0.5cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+firstextra={%
+\node[titregris,xshift=1cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+}
+\makeatother
+
+
+%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\mdfdefinestyle{theoremstyle}{%
+outerlinewidth=0.01em,linecolor=black,middlelinewidth=0.5pt,%
+frametitlerule=true,roundcorner=2pt,%
+apptotikzsetting={\tikzset{mfframetitlebackground/.append style={%
+shade,left color=white, right color=blue!20}}},
+frametitlerulecolor=black,innertopmargin=1\baselineskip,%green!60,
+innerbottommargin=0.5\baselineskip,
+frametitlerulewidth=0.1pt,
+innertopmargin=0.7\topskip,skipabove={\dimexpr0.2\baselineskip+0.1\topskip\relax},
+frametitleaboveskip=1pt,
+frametitlebelowskip=1pt
+}
+\setlength{\parskip}{0mm}
+\setlength{\parindent}{10mm}
+\mdtheorem[style=theoremstyle]{exercise}{\textbf{Exercise}}
+\mdtheorem[style=theoremstyle]{Answer}{\textbf{Answers to Exercise}}
+%================Liste definition--numList-and alphList=============
+\newcounter{alphListCounter}
+\newenvironment
+{alphList}
+{\begin{list}
+{\alph{alphListCounter})}
+{\usecounter{alphListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0.2cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+\newcounter{numListCounter}
+\newenvironment
+{numList}
+{\begin{list}
+{\arabic{numListCounter})}
+{\usecounter{numListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+
+\usepackage[breaklinks=true,letterpaper=true,linkcolor=magenta,urlcolor=magenta,citecolor=black]{hyperref}
+
+\usepackage{cleveref}
+
+
+%===========================================================
+\begin{document}
+
+\begin{center}
+  \large{\textbf{COMP 6651 Algorithm Design Techniques} \\ Assignment 1 Answers} \\
+
+
+$Name:$ \href{https://benymaxparsa.github.io}{Parsa Kamalipour} \; , \; $Student ID:$ 40310734
+
+\end{center}
+%\begin{center}
+%\begin{itemize}
+%    
+%
+%\item  Submit your write-up in PDF (we do not accept hand-written submissions) and all source code %in a zip file (with proper documentation)
+%as an ipynb file (with proper documentation). Your writeup should include written answers to all questions, including the reported results and plots of coding questions in a single PDF file.  Please save the output of each cell or your coding questions may NOT be graded. Write a script for each programming exercise so the TAs can easily run and verify your results. Make sure your code runs!
+%
+%\item Text in square brackets are hints that can be ignored.
+%%\end{center}
+%\end{itemize}
+%\noindent \red{NOTE} For all the exercises, you are only allowed to use the basic Python, Numpy, and matplotlib (or other libraries for plotting), unless specified otherwise.
+
+
+\begin{exercise}[(20 marks)]
+%\textcolor{red}{NOTE} This is a theoretical question, and you are not required to code anything. 
+Let $f (n)$ and $g(n)$ be asymptotically positive functions. Prove or disprove each
+of the following conjectures. 
+	\begin{alphList}
+		\item $f (n) = O(g(n))$ implies $g(n) = O(f (n)).$
+		\item $f (n) = O((f (n))^2).$
+		\item $f (n) = \Theta(f (n/2)).$
+		\item $f (n) + o(f (n)) = Θ(f (n)).$
+	\end{alphList}   
+ 
+
+\end{exercise}
+
+%\textbf{Answers to Question \#1:}
+
+\begin{Answer}[]
+	\begin{alphList}
+	
+	
+		\item \textcolor{red}{$f (n) = O(g(n))$ implies $g(n) = O(f (n)).$} \\
+			This statement is \underbar{false}. The fact to say that $f(n) = O(g(n))$ means that $f(n)$ does not grows asymptotically faster than $g(n)$, but this does not implies that $g(n)$ also grows no faster than $f(n)$. \\
+			\\
+			\textbf{\underline{Counterexample:}} \\
+			Let $f(n)=n$ and $g(n)=n^2$. Then we have:\\
+			\begin{itemize}
+				\item $F(n)=O(g(n))$, since $n=O(n^2)$ is basically $n\leq C.n^2$ for some constant $C>0$ and $n > n_0$.
+				\item However, $g(n)\neq O(f(n))$, because $n^2$ grows faster than $n$, and there is no constant $C$ such that $n^2\leq C.n$ for some $n > n_0$.
+			\end{itemize}
+			Thus, the implication does not hold in general, and the conjection is \textbf{\underline{FALSE!}}
+			
+			
+			
+		\item \textcolor{red}{$f (n) = O((f (n))^2).$}\\
+			\textbf{\underline{Prove:}} This statement is true for non-descending, asymptotically positive functions. \\ \\
+			\textbf{\underline{Proof:}} \\
+			Let’s take any asymptotically positive function  $f(n)$ with the key idea that if  $f(n)$  is a non-decreasing function, then  $f(n) \leq f(n)^2$  for $n > n_0$ :\\
+			\begin{itemize}
+				\item For example, consider  $f(n) = n$ , we have  $n = O(n^2)$ , because  $n \leq C.n^2$  for some constant  $C$  when  $n>n_0$.
+			\end{itemize}
+			This holds for any $n>n_0$ with asymptotically positive function, that  $f(n) = O((f(n))^2)$  is \textbf{\underline{TRUE!}}
+			
+			
+			
+			\item \textcolor{red}{$f (n) = \Theta(f (n/2)).$}\\
+				\textbf{\underline{Disprove:}} \\
+				This statement is false in general. While some functions might satisfy this property, not all functions do.\\
+				
+				\textbf{\underline{Counterexample:}} \\
+				Let $f(n)=4^n$, We will have:
+				\begin{itemize}
+					\item $f(n)=4^n$
+					\item $f(n/2)=4^{n/2} \rightarrow f(n/2)=2^n$
+				\end{itemize}
+				By the different results of these two we can see that the growth rates are different, which does not satisfy the $\Theta(f(n))$. And the reason for it is that $4^n$ and $2^n$ has two separate order of growth, so they are not asymptotically the same.\\
+				Thus, the conjecture is \textbf{\underline{FALSE!}}.
+
+
+
+			\item \textcolor{red}{$f (n) + o(f (n)) = \Theta(f (n)).$}\\
+				\textbf{\underline{Prove:}} This statement is true. \\
+				\\
+				\textbf{\underline{Proof:}} \\
+				Let's assume $g(n)=o(f(n)).$\\
+				Then, there exists positive constant $C$ and $n$ such that $n> n_0$:\\
+				$$
+				0 \leq g(n) < C.f(n)	$$
+				$$
+				f(n) \leq f(n)+g(n) \leq f(n)+C.f(n) \; \; \; \; (add \; f(n) \; to \; every \; sides)$$
+				$$
+				f(n) \leq f(n) + o(f(n)) \leq (1+C).f(n) \; \; \; \; (replace \; g(n))
+				$$
+				Therefore, $f (n) + o(f (n))$ is bounded by $f(n)$ on both sides with some constant which makes it equal to $\Theta(f(n))$.\\
+				
+				For example, if  $f(n) = n$  and  $o(f(n)) = \log n$ , then  $n + \log n$  still behaves asymptotically like  $n$ , meaning it is  $\Theta(n)$ . Thus, the conjecture is \textbf{\underline{TRUE!}}.
+			
+	\end{alphList}
+\end{Answer}
+
+\begin{exercise}[(10 marks)]
+	The solution to the recurrence $T (n) = 4T (n/2)+n$ turns out to be $T (n) = \Theta(n^2)$.
+	\begin{alphList}
+		\item Show that a substitution proof with the assumption $T (n) \leq cn^2$ fails.
+		\item Then show how to subtract a lower-order term to make a substitution proof work.
+	\end{alphList}
+\end{exercise}
+
+\begin{Answer}[]
+	\begin{alphList}
+		\item \textcolor{red}{Show that a substitution proof with the assumption $T (n) \leq cn^2$ fails.}\\
+			Let's assume $T(n) \leq Cn^2$ where $C$ and $n_0$ are positive constants and $n_0 \leq n$ . \\
+			We have $T(n)=4T(n/2)+n$ and based on this formula lets plug-in the $n/2$ to our assumption: \\
+			$$
+			T(n/2) \leq C.(n/2)^2
+			$$
+			$$
+			T(n/2) \leq Cn^2/4
+			$$
+			Now lets plug-in this T(n/2) to $T(n)=4T(n/2)+n$: \\
+			$$ T(n) \leq 4*(C*n^2/4)+n$$
+			$$ T(n) \leq Cn^2+n $$
+			
+			But this inequality includes an additional term  $+n$ , which is not accounted for in the assumption  $T(n) \leq cn^2$  This suggests that the assumption  $T(n) \leq cn^2$  does not hold because the lower-order term  $n$  will eventually dominate, making the assumption  $T(n) \leq cn^2$  insufficient. \\ Therefore, \textbf{the proof fails due to the additional  +n  term.}
+			
+		\item \textcolor{red}{Then show how to subtract a lower-order term to make a substitution proof work.}
+		
+		To make the substitution work, we need to introduce a slightly tighter bound by subtracting a lower-order term, say  $\epsilon n^2$ , to account for the additional  $+n$ . \\
+		Now lets assume that $T(n) \leq Cn^2-\epsilon n$ for all $n_0 \leq n$, where C, $\epsilon, \; and \; n_0$ are positive. Lets plug-in $n/2$ to our assumption:\\
+		$$T(n)=4T(n/2)+n$$
+		$$T(n/2)\leq C(n/2)^2-(\epsilon n)/2$$
+		Now lets plug this $T(n/2)$ to the main $T(n)$:
+		$$T(n) \leq 4(C\frac{n^2}{4}-\frac{\epsilon n}{2})+n$$
+		$$T(n) \leq cn^2-2\epsilon n+n$$
+		$$T(n) \leq cn^2-\epsilon n - (\epsilon-1)n$$
+		As long as $(\epsilon - 1)n$ is positive and we set our base case as $n_0=1$: \\
+		(because our hypothesis works for any $\epsilon \geq 1$)\\
+		$$T(n) \leq cn^2-\epsilon n$$
+		
+	\end{alphList}	
+	\end{Answer}
+
+\begin{exercise}[(10 marks)]
+	For each of the following recurrences, sketch its recursion tree, and guess a good
+asymptotic upper bound on its solution. Then use the substitution method to verify your
+answer.\\
+	\begin{alphList}
+		\item $T (n) = T (n/2) + n^3$
+		\item $T (n) = 3T (n-1) + 1$
+	\end{alphList}
+\end{exercise}
+
+\begin{Answer}
+%	\begin{alphList}
+%		\item Step 1: Recursion Tree Sketch
+%
+%
+%
+%At the root, the cost is  $n^3$ .
+%The next level has one subproblem of size  $n/2$  with a cost of  $(n/2)^3 = \frac{n^3}{8}$ .
+%Continuing this recursion, the depth of the tree will be  $\log_2 n$ , and at each level, the cost of the subproblem is reduced by a factor of  $1/8$ .\\
+%
+%Step 2: Guess an upper bound
+%
+%The total work done at each level of the recursion tree is decreasing geometrically. The first level does  $n^3$  work, the second does  $\frac{n^3}{8}$ , and so on. The total work is dominated by the root, so we guess $ T(n) = O(n^3)$\\
+%
+%Step 3: Substitution Method
+%
+%Assume  $T(n) \leq cn^3$  for some constant  $c $. Substituting this into the recurrence:
+%
+%
+%$$T(n) = T(n/2) + n^3 \leq c(n/2)^3 + n^3 = \frac{cn^3}{8} + n^3$$
+%
+%
+%
+%$$T(n) \leq \frac{cn^3}{8} + n^3$$
+%
+%
+%For  $T(n) \leq cn^3$  to hold, we need:
+%
+%
+%$$\frac{cn^3}{8} + n^3 \leq cn^3$$
+%
+%
+%This simplifies to:
+%
+%
+%$$n^3 \leq \frac{7cn^3}{8}$$
+%
+%
+%
+%$$\frac{1}{7} \leq c$$
+%
+%
+%So, if  $c \geq 1$ , the assumption holds, and the upper bound is  $O(n^3)$ .
+%
+%	\item Step 1: Recursion Tree Sketch
+%
+%At the root, the cost is 1.
+%The next level has three subproblems of size  $n-1$ , each with a cost of 1.
+%Continuing this recursion, the depth of the tree will be  $n$ , and at each level, there are more subproblems, but each with constant cost.\\
+%
+%Step 2: Guess an upper bound
+%
+%At level  $i$ , there are  $3^i$  subproblems, each with a cost of 1. The total work at each level grows exponentially. The total number of subproblems after  $n$  levels is  $3^n$ , so the total work is  $O(3^n)$ .\\
+%
+%Step 3: Substitution Method
+%
+%Assume  $T(n) \leq c \cdot 3^n $ for some constant  $c$ . Substituting into the recurrence:
+%
+%
+%$$T(n) = 3T(n-1) + 1 \leq 3c \cdot 3^{n-1} + 1 = c \cdot 3^n + 1$$
+%
+%
+%For  $T(n) \leq c \cdot 3^n$  to hold, we need:
+%
+%
+%$$c \cdot 3^n + 1 \leq c \cdot 3^n$$
+%
+%
+%This inequality clearly holds for all  $n$ , so the assumption is correct, and the upper bound is  $O(3^n)$ .
+%
+%	\end{alphList}
+
+
+\textcolor{red}{\textbf{Problem (a): \( T(n) = T(n/2) + n^3 \)}}
+
+The recursion tree for \( T(n) = T(n/2) + n^3 \) is as follows:
+
+\[
+\begin{array}{c}
+n^3 \\
+\downarrow \\
+T(n/2) + (n/2)^3 \\
+\downarrow \\
+T(n/4) + (n/4)^3 + (n/2)^3 \\
+\downarrow \\
+T(n/8) + (n/8)^3 + (n/4)^3 + (n/2)^3 \\
+\vdots \\
+\end{array}
+\]
+
+The depth of the tree is \( \log n \), and at level \( i \), the total cost is:
+
+\[
+2^i \times \left( \frac{n}{2^i} \right)^3 = \frac{n^3}{2^{2i}}.
+\]
+
+Summing the cost over all levels gives:
+
+\[
+T(n) = n^3 \left( 1 + \frac{1}{2^2} + \frac{1}{4^2} + \cdots \right),
+\]
+
+which converges to \( O(n^3) \).
+
+Thus, the solution is:
+
+\[
+T(n) = O(n^3).
+\]
+
+\textcolor{red}{\textbf{Substitution Method}:}
+
+We guess that \( T(n) = O(n^3) \), and use induction to prove it.
+
+**Base Case**: For small values of \( n \), such as \( n = 1 \), the recurrence becomes:
+
+\[
+T(1) = O(1^3) = O(1).
+\]
+
+Clearly, this holds.
+
+**Inductive Hypothesis**: Assume that for some \( k \leq n \), the recurrence holds:
+
+\[
+T(k) \leq c k^3,
+\]
+
+for some constant \( c > 0 \).
+
+**Inductive Step**: We need to prove that \( T(n) \leq c n^3 \) holds for \( n \). Using the recurrence relation:
+
+\[
+T(n) = T(n/2) + n^3.
+\]
+
+By the inductive hypothesis, we can substitute \( T(n/2) \):
+
+\[
+T(n) \leq c (n/2)^3 + n^3.
+\]
+
+Simplifying:
+
+\[
+T(n) \leq c \frac{n^3}{8} + n^3.
+\]
+
+Factoring out \( n^3 \):
+
+\[
+T(n) \leq n^3 \left( \frac{c}{8} + 1 \right).
+\]
+
+For sufficiently large \( c \), the inequality holds, confirming that:
+
+\[
+T(n) = O(n^3).
+\]
+
+\textcolor{red}{\textbf{Problem (b): \( T(n) = 3T(n-1) + 1 \)}:}
+
+The recursion tree for \( T(n) = 3T(n-1) + 1 \) is as follows:
+
+\[
+\begin{array}{c}
+1 \\
+\downarrow \\
+3 \times (1 + 1 + 1) \\
+\downarrow \\
+3^2 \times (1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) \\
+\downarrow \\
+3^3 \times \ldots \\
+\vdots \\
+\end{array}
+\]
+
+At level \( i \), there are \( 3^i \) subproblems, and the total cost at each level is:
+
+\[
+T(n) = 1 + 3 + 3^2 + \cdots + 3^{n-1}.
+\]
+
+This is a geometric series that sums to \( O(3^n) \).
+
+Thus, the solution is:
+
+\[
+T(n) = O(3^n).
+\]
+
+\textcolor{red}{\textbf{Substitution Method}:}
+
+We guess that \( T(n) = O(3^n) \), and use induction to prove it.
+
+**Base Case**: For small values of \( n \), such as \( n = 1 \), the recurrence becomes:
+
+\[
+T(1) = O(3^1) = O(3).
+\]
+
+Clearly, this holds.
+
+**Inductive Hypothesis**: Assume that for some \( k \leq n \), the recurrence holds:
+
+\[
+T(k) \leq c 3^k,
+\]
+
+for some constant \( c > 0 \).
+
+**Inductive Step**: We need to prove that \( T(n) \leq c 3^n \) holds for \( n \). Using the recurrence relation:
+
+\[
+T(n) = 3T(n-1) + 1.
+\]
+
+By the inductive hypothesis, we can substitute \( T(n-1) \):
+
+\[
+T(n) \leq 3 \times c 3^{n-1} + 1.
+\]
+
+Simplifying:
+
+\[
+T(n) \leq c 3^n + 1.
+\]
+
+For sufficiently large \( n \), the term \( +1 \) is negligible, so:
+
+\[
+T(n) \leq c 3^n.
+\]
+
+Thus, by induction, the solution is:
+
+\[
+T(n) = O(3^n).
+\]
+
+
+\end{Answer}
+
+%\end{document}
+\begin{exercise}[(10 marks)]
+	Use the Akra-Bazzi method to solve the following recurrences.\\
+	\begin{alphList}
+		\item $T (n) = T (n/2) + T (n/3) + T (n/6) + n lg n$
+		\item $T (n) = (1/3)T (n/3) + 1/n$
+	\end{alphList}
+\end{exercise}
+
+\begin{Answer}
+%	\begin{alphList}
+%		\item We will use the Akra-Bazzi method here. The recurrence is of the form:
+%
+%
+%$$T(n) = a_1 T(n/b_1) + a_2 T(n/b_2) + a_3 T(n/b_3) + f(n)$$
+%
+%
+%where  $a_1 = a_2 = a_3 = 1 ,  b_1 = 2 ,  b_2 = 3 ,  b_3 = 6$ , and  $f(n) = n \log n$ .
+%
+%Using the Akra-Bazzi method, we solve for  $p$  such that:
+%
+%
+%$$\sum_{i} \frac{a_i}{b_i^p} = 1$$
+%
+%
+%This gives:
+%
+%
+%$$\frac{1}{2^p} + \frac{1}{3^p} + \frac{1}{6^p} = 1$$
+%
+%
+%Let’s solve this numerically. Trying  $p = 1$ :
+%
+%
+%$$\frac{1}{2} + \frac{1}{3} + \frac{1}{6} = 1$$
+%
+%
+%So,  $p = 1$  is the correct exponent.
+%
+%The total complexity is given by:
+%
+%
+%$$T(n) = O(n^p \log n) = O(n \log n)$$
+%
+%		
+%		
+%		\item Again, using the Akra-Bazzi method, we have  $a = 1/3 ,  b = 3$ , and  $f(n) = 1/n$ .
+%
+%To find  $p$ , we solve:
+%
+%
+%$$\frac{1/3}{3^p} = 1$$
+%
+%
+%This simplifies to:
+%
+%
+%$$\frac{1}{3^{p+1}} = 1$$
+%
+%
+%So,  $p = -1$ .
+%
+%The total complexity is given by:
+%
+%
+%$$T(n) = O(n^{-1}) \; \; \;or$$
+%
+%$$T(n) = O(1/n)$$
+%
+%	\end{alphList}
+
+%\textbf{Recurrence a:} \[ T(n) = T(n/2) + T(n/3) + T(n/6) + n \log n \]
+%
+%\begin{itemize}
+%    \item Applying the Akra-Bazzi method, we have the equation:
+%    \[
+%    \frac{1}{2^p} + \frac{1}{3^p} + \frac{1}{6^p} = 1
+%    \]
+%    \item Solving for \( p \), we find that \( p = 1 \) satisfies the equation.
+%    \item The additional cost function is \( f(n) = n \log n \).
+%    \item Thus, the overall complexity is:
+%    \[
+%    T(n) = \mathcal{O}(n \log^2 n)
+%    \]
+%\end{itemize}
+%
+%\bigskip
+%\textbf{Recurrence b:} \[ T(n) = \frac{1}{3} T(n/3) + \frac{1}{n} \]
+%
+%\begin{itemize}
+%    \item Applying the Akra-Bazzi method, we solve the equation:
+%    \[
+%    \frac{1/3}{3^p} = 1
+%    \]
+%    \item This gives \( p = -1 \).
+%    \item The additional cost function is \( f(n) = \frac{1}{n} \), which grows slower than the recursion.
+%    \item Thus, the overall complexity is:
+%    \[
+%    T(n) = \mathcal{O}\left(\frac{1}{n}\right)
+%    \]
+%\end{itemize}
+
+To solve these recurrences using the Akra-Bazzi method, we will first identify the parameters \( a_i \), \( b_i \), and \( f(n) \) that fit the standard form of the Akra-Bazzi theorem:
+
+\[
+T(n) = \sum_{i=1}^{k} a_i\, T(b_i n) + f(n),
+\]
+where \( a_i > 0 \), \( 0 < b_i < 1 \), and \( f(n) \) is asymptotically positive.
+
+\section*{Part (a): \( T(n) = T(n/2) + T(n/3) + T(n/6) + n \lg n \)}
+
+\subsection*{Step 1: Identify Parameters}
+
+\begin{itemize}
+    \item Number of recursive calls: \( k = 3 \)
+    \item Coefficients: \( a_1 = a_2 = a_3 = 1 \)
+    \item Fractions of size: \( b_1 = \dfrac{1}{2},\quad b_2 = \dfrac{1}{3},\quad b_3 = \dfrac{1}{6} \)
+    \item Non-recursive part: \( f(n) = n \lg n \)
+\end{itemize}
+
+\subsection*{Step 2: Solve for \( p_0 \)}
+
+Find \( p_0 \) such that:
+
+\[
+\sum_{i=1}^{k} a_i\, b_i^{p_0} = 1
+\]
+
+Substitute the values:
+
+\[
+\left( \dfrac{1}{2} \right)^{p_0} + \left( \dfrac{1}{3} \right)^{p_0} + \left( \dfrac{1}{6} \right)^{p_0} = 1
+\]
+
+Simplify:
+
+\[
+2^{-p_0} + 3^{-p_0} + 6^{-p_0} = 1
+\]
+
+Test \( p_0 = 1 \):
+
+\[
+2^{-1} + 3^{-1} + 6^{-1} = \dfrac{1}{2} + \dfrac{1}{3} + \dfrac{1}{6} = 1
+\]
+
+Therefore, \( p_0 = 1 \).
+
+\subsection*{Step 3: Compute the Integral}
+
+Calculate:
+
+\[
+\int_{1}^{n} \dfrac{f(u)}{u^{p_0 + 1}}\, du = \int_{1}^{n} \dfrac{u \lg u}{u^{2}}\, du = \int_{1}^{n} \dfrac{\lg u}{u}\, du
+\]
+
+This integral evaluates to:
+
+\[
+\int_{1}^{n} \dfrac{\lg u}{u}\, du = \dfrac{1}{2} (\lg n)^2
+\]
+
+\subsection*{Step 4: Determine \( T(n) \)}
+
+Using the Akra-Bazzi theorem:
+
+\[
+T(n) = \Theta\left( n^{p_0} \left( 1 + \int_{1}^{n} \dfrac{f(u)}{u^{p_0 + 1}}\, du \right) \right)
+\]
+
+Substitute \( p_0 = 1 \):
+
+\[
+T(n) = \Theta\left( n \left( 1 + \dfrac{1}{2} (\lg n)^2 \right) \right) = \Theta\left( n (\lg n)^2 \right)
+\]
+
+\subsection*{Final Answer for Part (a)}
+
+\[
+T(n) = \Theta\left( n\, (\log n)^2 \right)
+\]
+
+\bigskip
+
+\section*{Part (b): \( T(n) = \dfrac{1}{3}\, T\left( \dfrac{n}{3} \right) + \dfrac{1}{n} \)}
+
+\subsection*{Step 1: Identify Parameters}
+
+\begin{itemize}
+    \item Number of recursive calls: \( k = 1 \)
+    \item Coefficient: \( a_1 = \dfrac{1}{3} \)
+    \item Fraction of size: \( b_1 = \dfrac{1}{3} \)
+    \item Non-recursive part: \( f(n) = \dfrac{1}{n} \)
+\end{itemize}
+
+\subsection*{Step 2: Solve for \( p_0 \)}
+
+Find \( p_0 \) such that:
+
+\[
+a_1\, b_1^{p_0} = 1
+\]
+
+Substitute the values:
+
+\[
+\dfrac{1}{3} \left( \dfrac{1}{3} \right)^{p_0} = 1 \implies \left( \dfrac{1}{3} \right)^{1 + p_0} = 1
+\]
+
+Solve for \( p_0 \):
+
+\[
+1 + p_0 = 0 \implies p_0 = -1
+\]
+
+\subsection*{Step 3: Compute the Integral}
+
+Calculate:
+
+\[
+\int_{1}^{n} \dfrac{f(u)}{u^{p_0 + 1}}\, du = \int_{1}^{n} \dfrac{\dfrac{1}{u}}{u^{0}}\, du = \int_{1}^{n} \dfrac{1}{u}\, du = \ln n
+\]
+
+\subsection*{Step 4: Determine \( T(n) \)}
+
+Using the Akra-Bazzi theorem:
+
+\[
+T(n) = \Theta\left( n^{p_0} \left( 1 + \int_{1}^{n} \dfrac{f(u)}{u^{p_0 + 1}}\, du \right) \right)
+\]
+
+Substitute \( p_0 = -1 \):
+
+\[
+T(n) = \Theta\left( n^{-1} \left( 1 + \ln n \right) \right) = \Theta\left( \dfrac{\ln n}{n} \right)
+\]
+
+\subsection*{Final Answer for Part (b)}
+
+\[
+T(n) = \Theta\left( \dfrac{\log n}{n} \right)
+\]
+
+\bigskip
+
+\section*{Summary of Final Answers}
+
+\begin{enumerate}
+    \item[(a)] \( T(n) = \Theta\left( n\, (\log n)^2 \right) \)
+    \item[(b)] \( T(n) = \Theta\left( \dfrac{\log n}{n} \right) \)
+\end{enumerate}
+
+%\end{document}
+\end{Answer}
+
+
+\begin{exercise}[(20 marks)]
+	Suppose you are consulting for a bank that is concerned about fraud detection,
+and they come to you with the following problem. They have a collection of n bank cards.
+Each bank card is a small plastic object, containing a smart chip with some encrypted data,
+and it corresponds to a unique account in the bank. Each bank can have many bank cards
+corresponding to it, and we will say that two bank cards are equivalent if they correspond to
+the same account.\\\\
+It is very difficult to read the account number off a bank card directly, but the bank has a high-
+tech “equivalence tester” that takes two bank cards and, after performing some computations,
+determines whether they are equivalent.\\\\
+Their question is the following: among the collection of n cards, is there a set of more than
+n/2 of them that are all equivalent to one another? Assume that the only feasible operations
+you can do with the cards are to pick two of them and plug them into the equivalence tester.
+
+	\begin{alphList}
+		\item Give an algorithm to decide the answer to their question with only $O(n log n)$
+invocations of the equivalence tester.
+		\item Prove the correctness of your algorithm.
+		\item Using a recurrence relation to define the worst-case running time in terms of the number
+of invocations of the equivalence tester, and prove the running time is $O(n log n)$.
+	\end{alphList}
+
+\end{exercise}
+
+\begin{Answer}
+%	\textbf{(a) Algorithm to Decide the Answer with} \( O(n \log n) \) \textbf{Invocations}
+%
+%We can use a divide-and-conquer strategy similar to the Boyer-Moore majority vote algorithm, but adapted to work with the equivalence tester.
+%
+%\textbf{Step-by-Step Algorithm}:
+%\begin{enumerate}
+%    \item \textbf{Divide}: Split the collection of \( n \) cards into two roughly equal halves.
+%    \item \textbf{Recursively solve} the problem for both halves. The majority element (if it exists) must be the majority in at least one of the halves.
+%    \item \textbf{Conquer}: After recursion, you will have two potential candidates from the two halves. Now, check if one of these candidates is a majority element in the full set of \( n \) cards:
+%        \begin{itemize}
+%            \item Use the equivalence tester to count how many cards in the entire collection are equivalent to the candidate(s).
+%        \end{itemize}
+%    \item If a card is found to appear more than \( \frac{n}{2} \) times, return it as the majority element.
+%    \item If no card is found to appear more than \( \frac{n}{2} \) times, return that no majority exists.
+%\end{enumerate}
+%
+%\textbf{Complexity}:
+%\begin{itemize}
+%    \item Each level of recursion checks a constant number of pairs of cards using the equivalence tester.
+%    \item The recurrence relation for the algorithm is:
+%    \[
+%    T(n) = 2T\left(\frac{n}{2}\right) + O(n)
+%    \]
+%    By the master theorem, this solves to \( O(n \log n) \) invocations of the equivalence tester.
+%\end{itemize}
+%
+%\textbf{(b) Proving Correctness}
+%
+%\begin{enumerate}
+%    \item \textbf{Base case}: If \( n = 1 \), there is trivially a majority card (itself).
+%    \item \textbf{Inductive step}: Assume that for any collection of size \( k < n \), the algorithm correctly identifies if there is a majority card. When dividing into two halves of size \( n/2 \), if a majority exists, it must be the majority in one of the halves. By recursion, we correctly identify the majority candidate in each half.
+%    \item After obtaining the candidates from each half, we count how many cards in the entire set match the candidate(s). If a card appears more than \( \frac{n}{2} \) times, it must be the majority. Otherwise, no majority exists.
+%\end{enumerate}
+%
+%Thus, the algorithm correctly identifies whether a majority exists and returns the correct answer.
+%
+%\textbf{(c) Recurrence Relation and Running Time}
+%
+%The recurrence relation for the algorithm is:
+%
+%\[
+%T(n) = 2T\left(\frac{n}{2}\right) + O(n)
+%\]
+%
+%Here:
+%\begin{itemize}
+%    \item \( T(n) \) represents the total number of invocations of the equivalence tester for a collection of \( n \) cards.
+%    \item The problem is divided into two subproblems of size \( \frac{n}{2} \), and combining the results takes \( O(n) \) invocations.
+%\end{itemize}
+%
+%This recurrence is of the form:
+%
+%\[
+%T(n) = 2T\left(\frac{n}{2}\right) + O(n)
+%\]
+%
+%Using the master theorem, we see that the solution to this recurrence is \( T(n) = O(n \log n) \), which matches the required time complexity.
+
+\begin{enumerate}[(a)]
+    \item \textbf{Algorithm:}
+
+    We will use a \textit{divide-and-conquer} algorithm to determine whether there is a majority account among the $n$ bank cards. The algorithm works recursively by splitting the set of cards into halves, finding majority candidates in each half, and then combining the results.
+
+    \textbf{Steps of the Algorithm:}
+
+    \begin{enumerate}
+        \item \textbf{Base Case:} If there is only one card, return that card as the majority candidate.
+        \item \textbf{Recursive Case:}
+        \begin{enumerate}
+            \item \textbf{Divide:} Split the set of cards into two halves.
+            \item \textbf{Conquer:} Recursively find the majority candidate in each half.
+            \item \textbf{Combine:}
+            \begin{enumerate}
+                \item Use the equivalence tester to compare the two candidates from each half.
+                \item \textbf{If} they are equivalent, return that candidate.
+                \item \textbf{Else:}
+                    \item Count the occurrences of each candidate in the combined set using the equivalence tester.
+                    \item \textbf{If} either candidate occurs more than $n/2$ times, return that candidate.
+                    \item \textbf{Else}, return \texttt{None}, indicating no majority.
+            \end{enumerate}
+        \end{enumerate}
+    \end{enumerate}
+
+    This algorithm ensures that at each level of recursion, we perform $O(n)$ equivalence tests, leading to a total of $O(n \log n)$ equivalence tests.
+
+    \item \textbf{Proof of Correctness:}
+
+    We will prove the correctness of the algorithm using \textit{mathematical induction} on the number of cards $n$.
+
+    \textbf{Base Case ($n = 1$):}
+
+    \begin{itemize}
+        \item When there is only one card, it is trivially the majority since $1 > n/2$ when $n = 1$.
+        \item The algorithm correctly returns this card as the majority candidate.
+    \end{itemize}
+
+    \textbf{Inductive Step:}
+
+    Assume that the algorithm correctly identifies a majority among any set of $k < n$ cards.
+
+    For a set of $n$ cards:
+
+    \begin{enumerate}
+        \item \textbf{Divide:} The set is split into two halves of sizes $n_1$ and $n_2$, where $n_1 + n_2 = n$.
+        \item \textbf{Conquer:} By the induction hypothesis, the algorithm correctly identifies the majority candidate in each half.
+        
+        \item \textbf{Combine:}
+        \begin{enumerate}
+            \item \textbf{Same Candidate:}
+            \begin{itemize}
+                \item If both halves return the same candidate, that candidate is a potential majority in the combined set.
+            \end{itemize}
+            \item \textbf{Different Candidates:}
+            \begin{itemize}
+                \item If the candidates are different, we count the occurrences of each in the combined set using the equivalence tester.
+                \item If one occurs more than $n/2$ times, it is the majority.
+                \item If neither occurs more than $n/2$ times, there is no majority.
+            \end{itemize}
+        \end{enumerate}
+    \end{enumerate}
+
+    Since all possibilities are covered and the counts are accurate due to the equivalence tester, the algorithm correctly determines whether a majority exists.
+
+    \item \textbf{Running Time Analysis:}
+
+    Let $T(n)$ denote the worst-case number of equivalence tester invocations for $n$ cards.
+
+    The recurrence relation for the algorithm is:
+
+    \[
+    T(n) = 2T\left(\frac{n}{2}\right) + cn
+    \]
+
+    \begin{itemize}
+        \item $2T\left(\dfrac{n}{2}\right)$: The two recursive calls on the halves.
+        \item $cn$: The time to combine results, which includes:
+        \begin{itemize}
+            \item Comparing the two candidates ($O(1)$ test).
+            \item Counting occurrences of each candidate in the combined set ($O(n)$ tests).
+        \end{itemize}
+    \end{itemize}
+
+    Using the \textit{Master Theorem} for divide-and-conquer recurrences:
+
+    \begin{itemize}
+        \item $a = 2$, $b = 2$, and $f(n) = cn = O(n)$.
+        \item $\log_b a = \log_2 2 = 1$.
+        \item Since $f(n) = O(n^{\log_b a} \cdot \log^k n)$ with $k = 0$,
+        \item The recurrence solves to $T(n) = O(n \log n)$.
+    \end{itemize}
+
+    \textbf{Conclusion:}
+
+    The algorithm runs in $O(n \log n)$ time, with $O(n \log n)$ invocations of the equivalence tester, satisfying the requirements of the problem.
+\end{enumerate}
+\end{Answer}
+
+\begin{exercise}[(15 marks)]
+	Professors Howard, Fine, and Howard have proposed a deceptively simple sorting
+algorithm, named stooge sort in their honor, appearing on the following page.\\
+	\begin{alphList}
+		\item Argue that the call \textbf{STOOGE-SORT}$(A, 1, n)$ correctly sorts the array $A[1..n]$.
+		\item Give a recurrence for the worst-case running time of \textbf{STOOGE-SORT} and a tight asymptotic $(\theta-notation)$ bound on the worst-case running time.
+		\item Compare the worst-case running time of \textbf{STOOGE-SORT} with that of insertion sort,
+merge sort, and quicksort. Do the professors deserve tenure?\\
+
+\noindent
+\textbf{STOOGE-SORT($A, p, r$)} \\
+\textbf{if} $A[p] > A[r]$ \textbf{then} \\
+\hspace*{1cm} exchange $A[p]$ with $A[r]$ \\
+\textbf{if} $p + 1 < r$ \textbf{then} \\
+\hspace*{1cm} $k \leftarrow \lfloor (r - p + 1)/3 \rfloor$ \hfill \texttt{\small // round down} \\
+\hspace*{1cm} \textbf{STOOGE-SORT($A, p, r - k$)} \hfill \texttt{\small // first two-thirds} \\
+\hspace*{1cm} \textbf{STOOGE-SORT($A, p + k, r$)} \hfill \texttt{\small // last two-thirds} \\
+\hspace*{1cm} \textbf{STOOGE-SORT($A, p, r - k$)} \hfill \texttt{\small // first two-thirds again} \\
+\\
+
+	\end{alphList}
+\end{exercise}
+
+\begin{Answer}
+	
+%\textbf{Part (a): Argue that the call STOOGE-SORT(A, 1, n) correctly sorts the array A[1..n].}
+%
+%The algorithm works by recursively sorting two-thirds of the array twice and swapping the first and last elements if necessary.\\
+%
+%\textbf{Base Case:} If $p = r$, the array is trivially sorted as it contains one element.\\
+%\textbf{Recursive Case:} When $p < r$, the algorithm divides the segment into thirds and recursively sorts the first two-thirds, the last two-thirds, and then the first two-thirds again. This ensures that even if swapping was necessary between the first and last elements, the entire subarray will be sorted after the three recursive calls.
+%
+%To prove correctness, we can use induction on the length of the subarray:
+%
+%\begin{itemize}
+%    \item \textbf{Base Case (length 1):} If the subarray has one element, it is trivially sorted.
+%    \item \textbf{Inductive Hypothesis:} Assume that STOOGE-SORT$(A, p, r)$ correctly sorts any array of length less than $r - p + 1$.
+%    \item \textbf{Inductive Step:} The algorithm first sorts the first two-thirds of the array, ensuring that the smaller elements are pushed towards the start. Then it sorts the last two-thirds, ensuring that the larger elements are pushed towards the end. The final call to sort the first two-thirds again resolves any leftover inversion between these two segments.
+%\end{itemize}
+%
+%Thus, by induction, STOOGE-SORT$(A, 1, n)$ correctly sorts the array.
+%
+%\textbf{Part (b): Give a recurrence for the worst-case running time of STOOGE-SORT and a tight asymptotic bound (Θ-notation) on the worst-case running time.}
+%
+%\textbf{Deriving the Recurrence:}
+%
+%Let $T(n)$ denote the worst-case time complexity of STOOGE-SORT on an array of size $n$. For each call to STOOGE-SORT$(A, p, r)$, the array is recursively sorted three times:
+%\begin{itemize}
+%    \item First, STOOGE-SORT is called on the first two-thirds, then on the last two-thirds, and finally on the first two-thirds again.
+%\end{itemize}
+%Each recursive call works on two-thirds of the array. The non-recursive part of the algorithm (comparing and possibly swapping the first and last elements) takes constant time.
+%
+%Thus, the recurrence relation is:
+%\[
+%T(n) = 3T\left(\frac{2n}{3}\right) + O(1)
+%\]
+%
+%\textbf{Solving the Recurrence:}
+%We can solve this recurrence using the master theorem.
+%
+%The recurrence is of the form $T(n) = aT\left(\frac{n}{b}\right) + O(n^d)$, where $a = 3$, $b = \frac{3}{2}$, and $d = 0$.
+%\[
+%\log_b a = \log_{\frac{3}{2}} 3
+%\]
+%\[
+%\log_{\frac{3}{2}} 3 \approx 1.7095
+%\]
+%Since $\log_b a > d$, by the master theorem, the solution to the recurrence is:
+%\[
+%T(n) = \Theta(n^{\log_{\frac{3}{2}} 3}) \approx \Theta(n^{2.7095})
+%\]
+%Thus, the worst-case running time of STOOGE-SORT is $\Theta(n^{2.7095})$.
+%
+%\textbf{Part (c): Compare the worst-case running time of STOOGE-SORT with that of insertion sort, merge sort, and quicksort. Do the professors deserve tenure?}
+%
+%\textbf{Insertion Sort:} Worst-case time complexity is $O(n^2)$.\\
+%\textbf{Merge Sort:} Worst-case time complexity is $O(n \log n)$.\\
+%\textbf{Quicksort:} Worst-case time complexity is $O(n^2)$, but its average-case time complexity is $O(n \log n)$.
+%
+%\textbf{Comparison:}
+%STOOGE-SORT has a worst-case complexity of $\Theta(n^{2.7095})$, which is worse than the other sorting algorithms mentioned.
+%\begin{itemize}
+%    \item Insertion sort and quicksort (in the worst case) have $O(n^2)$, while merge sort is much more efficient with $O(n \log n)$.
+%\end{itemize}
+%
+%Given that STOOGE-SORT is significantly slower in the worst case than more practical algorithms like merge sort and quicksort, the professors’ algorithm, while interesting, is not efficient for practical use. Hence, the professors might not deserve tenure based solely on this algorithm!
+
+\textbf{Answer to (a):}
+
+We can prove by induction that the call \textbf{STOOGE-SORT}$(A, 1, n)$ correctly sorts the array $A[1..n]$.
+
+\textbf{Base Cases:}
+
+\begin{itemize}
+\item If $n = 1$, the array consists of a single element, which is trivially sorted.
+\item If $n = 2$, the algorithm compares $A[1]$ and $A[2]$ and swaps them if necessary to ensure $A[1] \leq A[2]$, thus sorting the array.
+\end{itemize}
+
+\textbf{Inductive Step:}
+
+Assume that \textbf{STOOGE-SORT} correctly sorts any array of length less than $n$. For an array of length $n \geq 3$, the algorithm performs the following steps:
+
+\begin{enumerate}
+\item \textbf{Swap Elements if Necessary:}
+\begin{itemize}
+\item It checks if $A[p] > A[r]$ and swaps them to ensure $A[p] \leq A[r]$.
+\end{itemize}
+\item \textbf{Recursive Calls:}
+\begin{itemize}
+\item It computes $k = \left\lfloor \dfrac{n}{3} \right\rfloor$.
+\item It recursively sorts the first two-thirds of the array: \textbf{STOOGE-SORT}$(A, p, r - k)$.
+\item It recursively sorts the last two-thirds of the array: \textbf{STOOGE-SORT}$(A, p + k, r)$.
+\item It recursively sorts the first two-thirds again: \textbf{STOOGE-SORT}$(A, p, r - k)$.
+\end{itemize}
+\end{enumerate}
+
+\textbf{Explanation:}
+
+\begin{itemize}
+\item After the first call, the subarray $A[p,..,r - k]$ is sorted.
+\item After the second call, the subarray $A[p + k,..,r]$ is sorted.
+\item The overlap between these two subarrays ensures that elements are compared and ordered correctly across the entire array.
+\item The final call re-sorts $A[p,..,r - k]$ to correct any disorder introduced by the second call.
+\item By the inductive hypothesis, each recursive call correctly sorts its respective subarray.
+\end{itemize}
+
+Therefore, after these steps, the entire subarray $A[p,..,r]$ is sorted, proving that \textbf{STOOGE-SORT} correctly sorts $A[1..n]$.
+
+
+\vspace{+0.5cm}
+
+\textbf{Answer to (b):}
+
+Let $T(n)$ denote the worst-case running time of \textbf{STOOGE-SORT} on an array of size $n$.
+
+\textbf{Recurrence Relation:}
+
+\begin{itemize}
+\item For $n \leq 2$, $T(n) = \Theta(1)$.
+\item For $n > 2$, the algorithm makes three recursive calls on subarrays of size approximately $\dfrac{2n}{3}$ (since $k = \left\lfloor \dfrac{n}{3} \right\rfloor$, so $r - k \approx \dfrac{2n}{3}$).
+\end{itemize}
+
+So the recurrence relation is:
+
+\[
+T(n) = 3 \cdot T\left( \dfrac{2n}{3} \right) + \Theta(1)
+\]
+
+\textbf{Solution to the Recurrence:}
+
+We can apply the Master Theorem. The recurrence is of the form:
+
+\[
+T(n) = a \cdot T\left( \dfrac{n}{b} \right) + f(n)
+\]
+
+where:
+
+\begin{itemize}
+\item $a = 3$
+\item $b = \dfrac{3}{2}$ (since $\dfrac{n}{b} = \dfrac{2n}{3}$)
+\item $f(n) = \Theta(1)$
+\end{itemize}
+
+Compute $p$ such that $a \left( \dfrac{1}{b} \right)^p = 1$:
+
+\[
+\begin{aligned}
+3 \left( \dfrac{2}{3} \right)^p &= 1 \\
+\left( \dfrac{2}{3} \right)^p &= \dfrac{1}{3} \\
+\ln\left( \left( \dfrac{2}{3} \right)^p \right) &= \ln\left( \dfrac{1}{3} \right) \\
+p \ln\left( \dfrac{2}{3} \right) &= \ln\left( \dfrac{1}{3} \right) \\
+p &= \dfrac{ \ln\left( \dfrac{1}{3} \right) }{ \ln\left( \dfrac{2}{3} \right) }
+\end{aligned}
+\]
+
+Calculating the logarithms:
+
+\[
+\begin{aligned}
+p &= \dfrac{ -\ln 3 }{ \ln \left( \dfrac{2}{3} \right) } \\
+&= \dfrac{ -\ln 3 }{ \ln 2 - \ln 3 } \\
+&= \dfrac{ -1.0986 }{ 0.6931 - 1.0986 } \\
+&= \dfrac{ -1.0986 }{ -0.4055 } \\
+&\approx 2.7095
+\end{aligned}
+\]
+
+\textbf{Asymptotic Bound:}
+
+By the Master Theorem, since $f(n) = \Theta\left( n^{ \log_b a - \varepsilon } \right)$ for some $\varepsilon > 0$, the solution is:
+
+
+$T(n) = \Theta\left( n^{ \log_b a } \right) = \Theta\left( n^{2.7095} \right)$
+
+
+Thus, the tight asymptotic bound on the worst-case running time is:
+
+
+$T(n) = \Theta\left( n^{ \log_{(3/2)} 3 } \right)$
+
+\vspace{+0.5cm}
+
+\textbf{Answer to (c):}
+
+\textbf{Comparison of Worst-Case Running Times:}
+
+\begin{itemize}
+\item \textbf{Stooge Sort:} $\Theta\left( n^{2.7095} \right)$
+\item \textbf{Insertion Sort:} $\Theta(n^2)$
+\item \textbf{Merge Sort:} $\Theta(n \log n)$
+\item \textbf{Quicksort:}
+\begin{itemize}
+\item \textbf{Average Case:} $\Theta(n \log n)$
+\item \textbf{Worst Case:} $\Theta(n^2)$
+\end{itemize}
+\end{itemize}
+
+\textbf{Evaluation:}
+
+\begin{itemize}
+\item \textbf{Stooge Sort} has a worse worst-case running time than \textbf{Insertion Sort}, which itself is less efficient than \textbf{Merge Sort} and the average case of \textbf{Quicksort}.
+\item Stooge Sort’s time complexity is significantly higher, making it impractical for sorting large datasets.
+\end{itemize}
+
+\end{Answer}
+
+\begin{exercise}[(15 marks)]
+You are interested in analyzing some hard-to-obtain data from two separate databases. Each database contains $n$ numerical values - so there are $2n$ values total - and you may assume that no two values are the same. You would like to determine the median of this set of $2n$ values, which we will define to be the $n^{th}$ smallest value. \\\\
+However, the only way you can access these values is through queries to the databases. In a single query, you can specify a value $k$ to one of the databases and the chosen database will return the $k^{th}$ smallest value that it contains. Since queries are expensive, you would like to compute the median using as few queries as possible. \\
+
+\noindent
+\textbf{Given an algorithm that finds the median value using at most $O(\log n)$ queries.}
+	
+\end{exercise}
+
+\begin{Answer}
+
+To find the median of two databases, each containing $n$ unique numerical values, we can use a binary search algorithm that performs $O(\log n)$ queries.
+
+\subsection*{Algorithm Steps}
+
+\begin{enumerate}
+    \item \textbf{Initialize Variables:}
+    \begin{itemize}
+        \item Set $low = 0$.
+        \item Set $high = n$.
+    \end{itemize}
+    
+    \item \textbf{Begin Binary Search Loop:}
+    \begin{itemize}
+        \item \textbf{While} $low \leq high$, perform steps 3 to 6.
+    \end{itemize}
+    
+    \item \textbf{Calculate Indices:}
+    \begin{itemize}
+        \item $i = \left\lfloor \dfrac{low + high}{2} \right\rfloor$.
+        \item $j = n - i$.
+    \end{itemize}
+    
+    \item \textbf{Query Elements from Databases:}
+    \begin{itemize}
+        \item If $i > 0$, set $A_{i-1} =$ the $(i-1)$-th smallest element in Database A; else, $A_{i-1} = -\infty$.
+        \item If $i < n$, set $A_i =$ the $i$-th smallest element in Database A; else, $A_i = +\infty$.
+        \item If $j > 0$, set $B_{j-1} =$ the $(j-1)$-th smallest element in Database B; else, $B_{j-1} = -\infty$.
+        \item If $j < n$, set $B_j =$ the $j$-th smallest element in Database B; else, $B_j = +\infty$.
+    \end{itemize}
+    
+    \item \textbf{Check Conditions:}
+    \begin{itemize}
+        \item \textbf{If} $A_{i-1} \leq B_j$ \textbf{and} $B_{j-1} \leq A_i$:
+        \begin{itemize}
+            \item The median is $\max(A_{i-1}, B_{j-1})$.
+            \item \textbf{Terminate} the algorithm.
+        \end{itemize}
+        \item \textbf{Else if} $A_{i-1} > B_j$:
+        \begin{itemize}
+            \item Set $high = i - 1$.
+        \end{itemize}
+        \item \textbf{Else}:
+        \begin{itemize}
+            \item Set $low = i + 1$.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Repeat} steps 2 to 5 until the median is found.
+\end{enumerate}
+
+\subsection*{Explanation}
+
+\begin{itemize}
+    \item \textbf{Binary Search Mechanism:} The algorithm uses binary search to partition the combined datasets. By adjusting the indices $i$ and $j$, it ensures that the left partition contains the $n$ smallest elements.
+    \item \textbf{Queries:} At each iteration, the algorithm queries up to four elements, handling edge cases by assigning $+\infty$ or $-\infty$ appropriately.
+    \item \textbf{Conditions for Median:} The algorithm checks if the largest element on the left partition of A ($A_{i-1}$) is less than or equal to the smallest element on the right partition of B ($B_j$), and vice versa. If this condition is met, the median is the maximum of $A_{i-1}$ and $B_{j-1}$.
+    \item \textbf{Adjusting Search Range:} If the condition is not met, the algorithm adjusts the search range by modifying $low$ or $high$ based on the comparison results.
+    \item \textbf{Efficiency:} Since the search range is halved in each iteration, the algorithm runs in $O(\log n)$ time.
+\end{itemize}
+
+\subsection*{Notes}
+
+\begin{itemize}
+    \item \textbf{Edge Cases:} Assigning $+\infty$ and $-\infty$ for out-of-bound indices ensures that comparisons remain valid without accessing invalid array positions.
+    \item \textbf{Uniqueness of Elements:} The assumption that all elements are unique simplifies the comparison logic.
+\end{itemize}
+
+\end{Answer}
+
+\vspace{+0.5cm}
+
+\par \textbf{Acknowledgement}\\
+
+I would like to acknowledge that I used ChatGPT to help \underline{refine my grammar and sentence structure} in this document. However, the \underline{solutions and ideas presented here are entirely my own}. 
+%When I got stuck on a specific question for an extended period, I reviewed similar examples on the internet and books to inspire my approach. Nonetheless, I did not copy any solution directly, and all of the work presented here reflects my understanding and expansion of the concepts.
+
+%
+%\begin{exercise}[Logistic Regression (9 pts)]
+%
+%\noindent In this exercise you will implement the logistic regression algorithm and evaluate it on the dataset provided with this assignment. The training dataset is divided into five different csv files. You need to combine this into a single training dataset. Do not use any machine learning library, but feel free to use libraries for linear algebra and feel free to verify your results with existing machine learning libraries.
+%
+%%Let $\Pr(C_1|x) = \sigma({\bf{w}}^T{\bf{x}}+w_0)$ and $\Pr(C_2|{\bf{x}}) = 1 - \sigma({\bf{w}}^T{\bf{x}}+w_0)$.  %Learn the parameters ${\bf{w}}$ and $w_0$ by conditional likelihood maximization. More specifically use Newton's algorithm derived in class to optimize the parameters. 10 iterations of Newton's algorithm should be sufficient for convergence. 
+%%Learn the parameters ${\bf{w}}$ and $w_0$ using the gradient descent algorithm. Use the maximum number of epochs to be 100 for GD. You can also use any appropriate convergence criteria to stop the GD loop before 100 epochs. Use a step size of 0.1 (or 0.01 if it is converging poorly) for GD. %Add a penalty of $0.5\lambda ||\bf{w}||_2^2$ to regularize the weights. Find the optimal hyperparameter $\lambda$ by 10-fold cross-validation.
+%
+%\begin{enumerate}
+%    \item (2 pts) Let $\Pr(C_1|x) = \sigma({\bf{w}}^T{\bf{x}}+w_0)$ and $\Pr(C_2|{\bf{x}}) = 1 - \sigma({\bf{w}}^T{\bf{x}}+w_0)$. Learn the parameters ${\bf{w}}$ and $w_0$ using the gradient descent algorithm. Use the maximum number of epochs to be 100 for GD. You can also use any appropriate convergence criteria to stop the GD loop before 100 epochs. Use a step size of 0.1 (or 0.01 if it is converging poorly) for GD. 
+%    
+%    \item (0.25 pts) After the training process, create the following plots:
+%		\begin{enumerate}
+%			\item test error vs the number of epochs
+%			\item training error vs the number of epochs
+%			\item test loss vs the number of epochs
+%			\item training loss vs the number of epochs
+%            \item Print the parameters ${\bf w}, w_0$ found for logistic regression.
+%		\end{enumerate}
+%    \item (5 pts) Now let's add a regularization term $0.5\lambda ||\bf{w}||_2^2$ to the loss function of your logistic regression algorithm. Your new loss function will be $\mathcal{L}_{new} = \mathcal{L}_{old} + 0.5\lambda ||\bf{w}||_2^2$, where $\mathcal{L}_{old}$ is the loss function of logistic regression we learned in lecture 3. Choose two values of $\lambda = \{0.5, 1\}$ and train this algorithm on the given dataset with these two values of $\lambda$. 
+%    
+%    \item (0.25 pts) After the training process, create the plots mentioned in step 2, for this updated logistic regression algorithm. You should have two sets of plots since you used two different values of $lambda$ to train the model.  
+%    
+%    \item (1.5 pts) Compared the results for step 2 with the results for the updated logistic regression with two values of $lambda$. Which of the tree algorithms performs the best? Why? Compare the values of ${\bf w}, w_0$ for all three cases. How is $\lambda$ affecting these parameter values, and the overall error?
+%
+%    \item (\blue{Extra Credit: 1.5 pts}) Use 5-fold cross-validation on the training dataset to find the best value for $\lambda$. Report the best $\lambda$, and also draw a plot that shows the cross-validation error of logistic regression as $\lambda$ varies. Note that the training dataset is already divided into 5 different csv files, to ease the cross-validation process. Report the test error for the best $\lambda$. Is this better than the results in steps 2, and 5? Why or why not?
+%    
+%\end{enumerate}
+%
+%\end{exercise}
+
+
+\end{document}
+              
