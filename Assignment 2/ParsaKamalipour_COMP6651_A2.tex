@@ -1,0 +1,532 @@
+\documentclass[10pt,letter,notitlepage]{article}
+%Mise en page
+\usepackage[left=2cm, right=2cm, lines=45, top=0.8in, bottom=0.7in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{fancybox}
+\usepackage{pdfpages} 
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\footrulewidth}{1.5pt}
+\pagestyle{fancy}
+\newcommand\Loadedframemethod{TikZ}
+\usepackage[framemethod=\Loadedframemethod]{mdframed}
+\usepackage{tikz}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+%\usepackage{url}
+\usepackage{dsfont}
+\usepackage{amssymb,amsmath}
+\usepackage{xspace}
+\usepackage{comment}
+\usepackage[shortlabels]{enumitem}
+
+
+
+\usepackage{xcolor}
+
+\lhead{
+\textbf{Concordia University}
+}
+\rhead{\textbf{Fall 2024}
+}
+\chead{\textbf{
+COMP6651
+ }}
+
+\newcommand{\RR}{\mathds{R}}
+\newcommand{\sign}{\mathop{\mathrm{sign}}}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\bv}{\mathbf{b}}
+\newcommand{\wv}{\mathbf{w}}
+\newcommand{\xv}{\mathbf{x}}
+\newcommand{\yv}{\mathbf{y}}
+\newcommand{\rv}{\mathbf{r}}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\magenta}[1]{{\color{magenta}#1}}
+\newcommand{\bits}{\{ 0, 1 \}}
+
+
+\newcommand{\ea}{{et al.}\xspace}
+\newcommand{\eg}{{e.g.}\xspace}
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand{\iid}{{i.i.d.}\xspace}
+\newcommand{\cf}{{cf.}\xspace}
+\newcommand{\wrt}{{w.r.t.}\xspace}
+\newcommand{\aka}{{a.k.a.}\xspace}
+\newcommand{\etc}{{etc.}\xspace}
+
+\newcommand{\ans}[1]{{\color{orange}\textsf{Ans}: #1}}
+
+
+\lfoot{}
+\cfoot{\textbf{Parsa Kamalipour (\href{mailto:parsa.kamalipour@mail.concordia.ca}{parsa.kamalipour@mail.concordia.ca}) \textcopyright 2024}}
+
+%================================
+%================================
+
+\setlength{\parskip}{1cm}
+\setlength{\parindent}{1cm}
+\tikzstyle{titregris} =
+[draw=gray,fill=white, shading = exersicetitle, %
+text=gray, rectangle, rounded corners, right,minimum height=.3cm]
+\pgfdeclarehorizontalshading{exersicebackground}{100bp}
+{color(0bp)=(green!40); color(100bp)=(black!5)}
+\pgfdeclarehorizontalshading{exersicetitle}{100bp}
+{color(0bp)=(red!40);color(100bp)=(black!5)}
+\newcounter{exercise}
+\renewcommand*\theexercise{exercice \textbf{Exercice}~n\arabic{exercise}}
+\makeatletter
+\def\mdf@@exercisepoints{}%new mdframed key:
+\define@key{mdf}{exercisepoints}{%
+\def\mdf@@exercisepoints{#1}
+}
+
+\mdfdefinestyle{exercisestyle}{%
+outerlinewidth=1em,outerlinecolor=white,%
+leftmargin=-1em,rightmargin=-1em,%
+middlelinewidth=0.5pt,roundcorner=3pt,linecolor=black,
+apptotikzsetting={\tikzset{mdfbackground/.append style ={%
+shading = exersicebackground}}},
+innertopmargin=0.1\baselineskip,
+skipabove={\dimexpr0.1\baselineskip+0\topskip\relax},
+skipbelow={-0.1em},
+needspace=0.5\baselineskip,
+frametitlefont=\sffamily\bfseries,
+settings={\global\stepcounter{exercise}},
+singleextra={%
+\node[titregris,xshift=0.5cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+firstextra={%
+\node[titregris,xshift=1cm] at (P-|O) %
+{~\mdf@frametitlefont{\theexercise}~};
+\ifdefempty{\mdf@@exercisepoints}%
+{}%
+{\node[titregris,left,xshift=-1cm] at (P)%
+{~\mdf@frametitlefont{\mdf@@exercisepoints points}~};}%
+},
+}
+\makeatother
+
+
+%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+\mdfdefinestyle{theoremstyle}{%
+outerlinewidth=0.01em,linecolor=black,middlelinewidth=0.5pt,%
+frametitlerule=true,roundcorner=2pt,%
+apptotikzsetting={\tikzset{mfframetitlebackground/.append style={%
+shade,left color=white, right color=blue!20}}},
+frametitlerulecolor=black,innertopmargin=1\baselineskip,%green!60,
+innerbottommargin=0.5\baselineskip,
+frametitlerulewidth=0.1pt,
+innertopmargin=0.7\topskip,skipabove={\dimexpr0.2\baselineskip+0.1\topskip\relax},
+frametitleaboveskip=1pt,
+frametitlebelowskip=1pt
+}
+\setlength{\parskip}{0mm}
+\setlength{\parindent}{10mm}
+\mdtheorem[style=theoremstyle]{exercise}{\textbf{Exercise}}
+\mdtheorem[style=theoremstyle]{Answer}{\textbf{Answers to Exercise}}
+%================Liste definition--numList-and alphList=============
+\newcounter{alphListCounter}
+\newenvironment
+{alphList}
+{\begin{list}
+{\alph{alphListCounter})}
+{\usecounter{alphListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0.2cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+\newcounter{numListCounter}
+\newenvironment
+{numList}
+{\begin{list}
+{\arabic{numListCounter})}
+{\usecounter{numListCounter}
+\setlength{\rightmargin}{0cm}
+\setlength{\leftmargin}{0.5cm}
+\setlength{\itemsep}{0cm}
+\setlength{\partopsep}{0cm}
+\setlength{\parsep}{0cm}}
+}
+{\end{list}}
+
+\usepackage[breaklinks=true,letterpaper=true,linkcolor=magenta,urlcolor=magenta,citecolor=black]{hyperref}
+
+\usepackage{cleveref}
+
+
+%===========================================================
+\begin{document}
+
+\begin{center}
+  \large{\textbf{COMP 6651 Algorithm Design Techniques} \\ Assignment 2 Answers} \\
+
+
+$Name:$ \href{https://benymaxparsa.github.io}{Parsa Kamalipour} \; , \; $Student ID:$ 40310734
+
+\end{center}
+%\begin{center}
+%\begin{itemize}
+%    
+%
+%\item  Submit your write-up in PDF (we do not accept hand-written submissions) and all source code %in a zip file (with proper documentation)
+%as an ipynb file (with proper documentation). Your writeup should include written answers to all questions, including the reported results and plots of coding questions in a single PDF file.  Please save the output of each cell or your coding questions may NOT be graded. Write a script for each programming exercise so the TAs can easily run and verify your results. Make sure your code runs!
+%
+%\item Text in square brackets are hints that can be ignored.
+%%\end{center}
+%\end{itemize}
+%\noindent \red{NOTE} For all the exercises, you are only allowed to use the basic Python, Numpy, and matplotlib (or other libraries for plotting), unless specified otherwise.
+
+
+\begin{exercise}[(15 marks)]
+Consider a modification of the rod-cutting problem in which, in addition to a price $p_i$ for each rod, each cut incurs a fixed cost of $c$. The revenue associated with a solution is now the sum of the prices of the pieces minus the costs of making the cuts. Give a dynamic-programming algorithm to solve this modified problem.
+
+\end{exercise}
+
+%\textbf{Answers to Question \#1:}
+
+\begin{Answer}[]
+
+So, I've been working on a modification of the rod-cutting problem where, in addition to a price $p_i$ for each rod length $i$, each cut incurs a fixed cost $c$. The idea here is to figure out the best way to cut the rod so that we can maximize the revenue, which is now the sum of the prices of the pieces minus the total cost of making the cuts.
+
+\subsection*{Recurrence Relation}
+I define $dp[i]$ as the maximum revenue I can get for a rod of length $i$. The recurrence relation looks like this:
+
+\[
+dp[i] = \max_{1 \le j \le i} (p_j + dp[i - j] - c)
+\]
+
+where $p_j$ is the price of a piece of length $j$, and $c$ is the fixed cost for making a cut. The base case is simple:
+
+\[
+dp[0] = 0
+\]
+
+\subsection*{Pseudocode}
+\begin{verbatim}
+Modified-Rod-Cutting(p, n, c):
+    let dp[0..n] be a new array
+    dp[0] = 0
+    for i = 1 to n:
+        max_value = -infinity
+        for j = 1 to i:
+            max_value = max(max_value, p[j] + dp[i - j] - c)
+        dp[i] = max_value
+    return dp[n]
+\end{verbatim}
+
+\subsection*{Explanation}
+The approach I used here is dynamic programming to solve the problem efficiently. The algorithm iterates over all possible lengths of the rod, and for each length, it looks at all possible first cuts to find the one that gives the highest revenue, considering the fixed cutting cost $c$.
+
+\begin{numList}
+    \item The outer loop runs for each rod length $i$ from $1$ to $n$.
+    \item The inner loop considers each possible first cut length $j$ from $1$ to $i$, calculating the revenue by adding the price of the first piece $p_j$ and the maximum revenue for the remaining length $dp[i - j]$, while subtracting the fixed cost $c$.
+\end{numList}
+The value $dp[n]$ at the end of the algorithm gives the maximum revenue for a rod of length $n$.
+
+\subsection*{Time Complexity}
+The time complexity of this approach is $O(n^2)$, since it involves two nested loops: one for the rod length and one for possible cuts.
+
+
+
+\end{Answer}
+
+\begin{exercise}[(15 marks)]
+Give pseudocode to reconstruct an LCS from the completed $c[0..m, 0..n]$ table and the original sequences $X = \langle x_1, x_2, \dots, x_m \rangle$ and $Y = \langle y_1, y_2, \dots, y_n \rangle$ in $O(m + n)$ time, without using the $b$ table.
+\end{exercise}
+
+\begin{Answer}[]
+
+Now, let's move on to a problem involving the reconstruction of the Longest Common Subsequence (LCS). Given the completed $c[0..m, 0..n]$ table and the original sequences $X = \langle x_1, x_2, \dots, x_m \rangle$ and $Y = \langle y_1, y_2, \dots, y_n \rangle$, we need to reconstruct an LCS without using the $b$ table, and we want to do this in $O(m + n)$ time.
+
+\subsection*{Approach}
+To reconstruct the LCS, we will start from $c[m, n]$ and trace our way back to $c[0, 0]$. At each step, we will decide whether to include the current character in the LCS based on the values in the $c$ table.
+
+\subsection*{Pseudocode}
+\begin{verbatim}
+Reconstruct-LCS(X, Y, c):
+    i = length(X)
+    j = length(Y)
+    lcs = []
+    while i > 0 and j > 0:
+        if X[i] == Y[j]:
+            lcs.append(X[i])
+            i -= 1
+            j -= 1
+        elif c[i-1][j] >= c[i][j-1]:
+            i -= 1
+        else:
+            j -= 1
+    lcs.reverse()
+    return lcs
+\end{verbatim}
+
+\subsection*{Explanation}
+\begin{numList}
+	\item Start from the bottom-right corner of the $c$ table ($c[m, n]$).
+	\item If $X[i] == Y[j]$, it means that the character $X[i]$ (or $Y[j]$) is part of the LCS. We add it to the LCS list and move diagonally up to $c[i-1, j-1]$.
+	\item If $X[i] \neq Y[j]$, we move in the direction of the larger value between $c[i-1, j]$ and $c[i, j-1]$ to continue the trace.
+	\item We continue this until we reach $c[0, 0]$.
+\end{numList}
+
+
+\subsection*{Time Complexity}
+The time complexity of this approach is $O(m + n)$ because, in the worst case, we make a linear pass through both sequences.
+
+
+\end{Answer}
+
+\begin{exercise}[(20 marks)]
+Consider a modification to the activity-selection problem in which each activity $a_i$ has, in addition to a start and finish time, a value $v_i$. The objective is no longer to maximize the number of activities scheduled, but instead to maximize the total value of the activities scheduled. That is, the goal is to choose a set $A$ of compatible activities such that $\sum_{a_k \in A} v_k$
+is maximized. Give a polynomial-time algorithm for this problem.
+\end{exercise}
+
+\begin{Answer}
+
+So, I've been looking at a modification to the classic activity-selection problem where, instead of maximizing the number of activities, we're interested in maximizing the total value of the selected activities. Each activity $a_i$ has a start time, a finish time, and a value $v_i$. The goal is to pick a set $A$ of non-overlapping activities such that the sum of their values is maximized.
+
+\subsection*{Approach}
+To solve this problem, I decided to use dynamic programming to figure out the maximum total value of the activities that can be scheduled. We need to consider all activities in increasing order of their finish times and use an array to store the optimal solutions for subproblems.
+
+\subsection*{Dynamic Programming Solution}
+Let $n$ be the number of activities, and let the activities be sorted in non-decreasing order of their finish times. Define $dp[i]$ as the maximum value obtainable by scheduling activities from $1$ to $i$. The recurrence relation for $dp[i]$ is:
+
+\[
+dp[i] = \max(v_i + dp[p(i)], dp[i-1])
+\]
+
+where $v_i$ is the value of the $i$-th activity, and $p(i)$ is the index of the last activity that does not overlap with activity $i$. If no such activity exists, $p(i) = 0$.
+
+The base case is:
+
+\[
+dp[0] = 0
+\]
+
+\subsection*{Pseudocode}
+\begin{verbatim}
+Activity-Selection-Value(activities):
+    sort activities by finish time
+    let dp[0..n] be a new array
+    dp[0] = 0
+    for i = 1 to n:
+        p_i = find_previous_non_overlapping(i, activities)
+        dp[i] = max(activities[i].value + dp[p_i], dp[i-1])
+    return dp[n]
+
+find_previous_non_overlapping(i, activities):
+    for j = i-1 down to 1:
+        if activities[j].finish <= activities[i].start:
+            return j
+    return 0
+\end{verbatim}
+
+\subsection*{Explanation}
+The dynamic programming approach works like this:
+\begin{numList}
+	\item Sort the activities by their finish times.
+	\item Use an array $dp$ to store the maximum value that can be obtained by considering activities up to index $i$.
+	\item For each activity $i$, calculate $dp[i]$ as the maximum between including the current activity (adding its value to the optimal solution of the previous non-overlapping activity) and not including it (taking the value of $dp[i-1]$).
+\end{numList}
+
+The function \texttt{find\_previous\_non\_overlapping(i, activities)} helps determine the most recent activity that does not overlap with activity $i$. This allows us to include the current activity without any conflicts.
+
+\subsection*{Time Complexity}
+The time complexity of this approach is $O(n \log n)$ due to the sorting step. The subsequent iteration and the search for the previous non-overlapping activity can be optimized using binary search, resulting in an overall time complexity of $O(n \log n)$.
+
+\end{Answer}
+
+\begin{exercise}[(20 marks)]
+Prove that the total cost $B(T)$ of a full binary tree $T$ for a code equals the sum, over all internal nodes, of the combined frequencies of the two children of the node.
+\end{exercise}
+
+\begin{Answer}
+
+So, in this question, I need to prove that the total cost $B(T)$ of a full binary tree $T$ for a code equals the sum, over all internal nodes, of the combined frequencies of the two children of the node.
+
+\subsection*{Problem Statement}
+Consider a full binary tree $T$ used for a code, where each leaf node represents a symbol with a certain frequency. The goal here is to prove that the total cost $B(T)$ of the tree equals the sum, over all internal nodes, of the combined frequencies of the two children of each internal node.
+
+\subsection*{Approach}
+To solve this problem, I'm going to consider a full binary tree $T$ where every internal node has exactly two children. Let $f_i$ represent the frequency of each leaf node $i$.
+
+The cost $B(T)$ is defined as the sum of the product of the frequency of each symbol and its depth in the tree. That is:
+
+\[
+B(T) = \sum_{i \in \text{leaves}} f_i \cdot d_i
+\]
+
+where $d_i$ is the depth of leaf $i$ in the tree.
+
+We need to prove that this cost is equal to the sum, over all internal nodes, of the combined frequencies of the two children of each internal node.
+
+\subsection*{Proof by Induction}
+We will use induction on the number of leaves $n$ in the full binary tree $T$ to prove the statement.
+
+\textbf{Base Case:} \\
+For $n = 2$, the tree has only one internal node, which is the root, with two leaves $x$ and $y$. Let the root be $z$. The cost $B(T)$ is:
+
+\[
+B(T) = f(x) \cdot d_T(x) + f(y) \cdot d_T(y)
+\]
+
+Since both leaves are at depth $1$, we have:
+
+\[
+B(T) = f(x) + f(y) = f(\text{child 1 of } z) + f(\text{child 2 of } z)
+\]
+
+Thus, the base case holds.
+
+\textbf{Inductive Step:} \\
+Suppose the statement is true for all full binary trees with $n - 1$ leaves. Now consider a full binary tree $T$ with $n$ leaves. Let $c_1$ and $c_2$ be two sibling leaves in $T$ with the same parent $p$. Let $T'$ be the tree obtained by deleting $c_1$ and $c_2$.
+
+By the induction hypothesis, the cost of $T'$ is:
+
+\[
+B(T') = \sum_{l' \in T'} f(l') \cdot d_T(l') = \sum_{i' \in T'} (f(\text{child 1 of } i') + f(\text{child 2 of } i'))
+\]
+
+Now, adding back $c_1$ and $c_2$ to form $T$, the total cost $B(T)$ is:
+
+\[
+B(T) = \sum_{l \in T} f(l) \cdot d_T(l)
+\]
+
+Breaking this sum down:
+
+\[
+B(T) = \sum_{l \neq c_1, c_2} f(l) \cdot d_T(l) + f(c_1) \cdot (d_T(c_1) - 1) + f(c_2) \cdot (d_T(c_2) - 1) + f(c_1) + f(c_2)
+\]
+
+Using the induction hypothesis:
+
+\[
+B(T) = \sum_{i' \in T'} (f(\text{child 1 of } i') + f(\text{child 2 of } i')) + f(c_1) + f(c_2)
+\]
+
+\[
+B(T) = \sum_{i \in T} (f(\text{child 1 of } i) + f(\text{child 2 of } i))
+\]
+
+Thus, by induction, the statement is true for all full binary trees.
+
+\subsection*{Conclusion}
+The total cost $B(T)$ of a full binary tree $T$ is equal to the sum, over all internal nodes, of the combined frequencies of the two children of each internal node. This result comes from the way the cost is distributed across the levels of the tree and how each internal node contributes to the overall cost.
+
+
+\end{Answer}
+
+
+\begin{exercise}[(10 marks)]
+You perform a sequence of PUSH and POP operations on a stack whose size never exceeds $k$. After every $k$ operations, a copy of the entire stack is made automatically, for backup purposes. Show that the cost of $n$ stack operations, including copying the stack, is $O(n)$ by assigning suitable amortized costs to the various stack operations.
+\end{exercise}
+
+\begin{Answer}
+
+
+So, in this question, I need to show that the amortized cost of a sequence of $n$ stack operations, including copying the stack after every $k$ operations, is $O(n)$.
+
+\subsection*{Problem Statement}
+I perform a sequence of PUSH and POP operations on a stack whose size never exceeds $k$. After every $k$ operations, a copy of the entire stack is made automatically for backup purposes. We need to show that the total cost of $n$ stack operations, including the copying of the stack, is $O(n)$ by assigning suitable amortized costs to the various stack operations.
+
+\subsection*{Approach}
+I'm going to use the \textbf{amortized analysis} technique to determine the cost of stack operations, including the cost of copying the stack. Amortized analysis lets us spread out the cost of expensive operations over a sequence of operations so that the average cost per operation stays low.
+
+\subsection*{Analysis}
+Consider the sequence of $n$ operations, where each operation is either a PUSH or a POP, and every $k$ operations we make a copy of the entire stack.
+
+\textbf{Assigning Costs:}
+\begin{numList}
+	\item The cost of a PUSH or POP operation is $1$ unit.
+	\item The cost of copying the stack is proportional to its size, which is at most $k$. So, the cost of copying is $k$ units.
+\end{numList}
+
+We need to figure out the total cost of $n$ operations, including the copying.
+
+\textbf{Amortized Cost Calculation:}
+\begin{numList}
+	\item I assign an \textbf{amortized cost} of $2$ units to each PUSH operation.
+	\item $1$ unit is for the actual PUSH operation.
+	\item The extra $1$ unit is saved to pay for the future copying cost.
+	\item Every time I perform $k$ operations, I make a copy of the stack, which costs $k$ units. Since I've saved $1$ unit per PUSH operation, after $k$ operations I have $k$ units saved, which is enough to pay for the copying cost.
+\end{numList}
+
+So, the amortized cost per operation is $2$ units, and the total amortized cost for $n$ operations is $2n$, which is $O(n)$.
+
+\subsection*{Conclusion}
+By using amortized analysis, I've shown that the total cost of $n$ stack operations, including the copying of the stack every $k$ operations, is $O(n)$. The key idea is to spread the cost of copying across all the operations, resulting in an amortized cost of $2$ units per operation.
+
+
+\end{Answer}
+
+\begin{exercise}[(20 marks)]
+Binary search of a sorted array takes logarithmic search time, but the time to insert a new element is linear in the size of the array. You can improve the time for insertion by keeping several sorted arrays.
+
+Specifically, suppose that you wish to support SEARCH and INSERT on a set of $n$ elements. Let $k = \lceil \log_2(n+ 1) \rceil$, and let the binary representation of $n$ be $\langle n_{k-1}, n_{k-2}, \dots, n_0 \rangle$. Maintain $k$ sorted arrays $A_0, A_1, \dots, A_{k-1}$, where for $i = 0, 1, \dots, k-1$, the length of array $A_i$ is $2^i$. Each array is either full or empty, depending on whether $n_i = 1$ or $n_i = 0$, respectively. The total number of elements held in all $k$ arrays is therefore 
+\[
+\sum_{i=0}^{k-1} n_i 2^i = n.
+\]
+Although each individual array is sorted, elements in different arrays bear no particular relationship to each other.
+
+\begin{itemize}
+  \item[(a)] Describe how to perform the SEARCH operation for this data structure. Analyze its worst-case running time.
+  \item[(b)] Describe how to perform the INSERT operation. Analyze its worst-case and amortized running times, assuming that the only operations are INSERT and SEARCH.
+\end{itemize}
+
+\end{exercise}
+
+\begin{Answer}
+	
+In this question, I'm trying to figure out how I can efficiently support SEARCH and INSERT operations for a set of $n$ elements by using multiple sorted arrays.
+
+\subsection*{Problem Statement}
+Doing a binary search on a sorted array is efficient, it takes logarithmic time, but inserting a new element has a linear time cost because you have to shift elements. To make insertion faster, I decided to use multiple sorted arrays.
+
+Specifically, I want to support SEARCH and INSERT for a set of $n$ elements. Let $k = \lceil \log_2(n + 1) \rceil$, and represent $n$ in binary as $\langle n_{k-1}, n_{k-2}, \dots, n_0 \rangle$. I keep $k$ sorted arrays $A_0, A_1, \dots, A_{k-1}$, where array $A_i$ has a length of $2^i$ for $i = 0, 1, \dots, k-1$. Each array can either be completely filled or empty, depending on whether $n_i = 1$ or $n_i = 0$. So, the total number of elements across all arrays is:
+
+\[
+\sum_{i=0}^{k-1} n_i 2^i = n
+\]
+
+While each individual array is sorted, there's no ordering relationship between elements in different arrays.
+
+\subsection*{Operations}
+.
+
+\textbf{SEARCH Operation:}\\
+Since I don't know how the elements are distributed between arrays, I have to linearly go through each array and do a binary search in each one. In the worst-case scenario, I end up searching through all of the arrays. Array $i$ has a size of $2^i$, and since it's sorted, I can search it in $O(i)$ time. As $i$ varies from $0$ to $O(\log n)$, the total runtime for SEARCH becomes $O(\log^2 n)$.\\
+
+
+\textbf{INSERT Operation:}\\
+For inserting, I place the new element into array $A_0$ and then update the rest of the arrays as necessary. In the worst case, I need to merge arrays $A_0, A_1, \dots, A_{m-1}$ into a new array $A_m$. Since merging two sorted arrays can be done in linear time relative to the combined length, the worst-case merge takes $O(2^m)$ time. In the worst case, this becomes $O(n)$ when $m$ equals $k$.\\
+
+To analyze the amortized cost, I use the accounting method. I assign a cost of $\log n$ to each insertion. This means that each inserted element carries enough credit to cover the costs of its future merges as other elements are added. Since an individual element can only be merged a maximum of $\log n$ times into increasingly larger arrays, this credit will pay for all its future costs. So, the amortized cost per insertion is $O(\log n)$.
+
+\subsection*{Conclusion}
+By maintaining multiple sorted arrays and leveraging binary search for SEARCH operations and repeated merging for INSERT operations, I achieve an efficient way to manage the dynamic set of elements. The worst-case time complexity for SEARCH is $O(\log^2 n)$, and the amortized time complexity for INSERT is $O(\log n)$.
+
+
+\end{Answer}
+
+\vspace{+0.5cm}
+
+\par \textbf{Acknowledgement}\\
+
+I would like to acknowledge that I used ChatGPT to help \underline{refine my grammar and sentence structure} in this document. However, the \underline{solutions and ideas presented here are entirely my own}. 
+
+
+\end{document}
+              
